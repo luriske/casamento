@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Diagnóstico Pagopar</title><style>
+body{font-family:system-ui;background:#f7f3ed;color:#354032;padding:30px}
+.card{max-width:600px;margin:auto;background:white;border-radius:18px;padding:24px;box-shadow:0 10px 30px #0001}
+pre{white-space:pre-wrap;background:#f2f1ed;padding:14px;border-radius:12px}
+.ok{color:#317a3a}.bad{color:#a6473e}
+</style></head><body><div class="card"><h1>Diagnóstico Pagopar</h1>
+<p id="status">Consultando servidor…</p><pre id="json"></pre>
+</div><script>
+fetch('/api/create-payment').then(async r=>({ok:r.ok,status:r.status,data:await r.json()}))
+.then(x=>{status.innerHTML=x.data.ready?'<b class="ok">Servidor pronto.</b>':'<b class="bad">Servidor ainda não está pronto.</b>';json.textContent=JSON.stringify(x,null,2)})
+.catch(e=>{status.innerHTML='<b class="bad">Falha ao acessar API.</b>';json.textContent=e.message})
+</script></body></html>
