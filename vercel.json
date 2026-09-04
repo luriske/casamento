@@ -1,6 +1,5 @@
 {
   "rewrites": [
-    { "source": "/assets/presentes-sprite.webp", "destination": "/api/gift-sprite" },
-    { "source": "/", "destination": "/index.html" }
+    { "source": "/", "destination": "/api/home" }
   ]
 }
