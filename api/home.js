@@ -1,16 +1,16 @@
 export default async function handler(req,res){
   try{
-    const host=req.headers.host;
-    const proto=(req.headers['x-forwarded-proto']||'https').split(',')[0];
-    const r=await fetch(`${proto}://${host}/index.html`,{cache:'no-store'});
+    // Lê sempre a versão atual do GitHub para evitar servir um index antigo em cache.
+    const r=await fetch(`https://raw.githubusercontent.com/luriske/casamento/main/index.html?v=${Date.now()}`,{cache:'no-store'});
     let html=await r.text();
 
-    // Corrige o link antigo de RSVP e injeta uma proteção extra no cliente.
+    // Remove o alerta antigo e aponta o botão diretamente para a confirmação.
     html=html.replace(
-      /href="#"\s+onclick="alert\('Aqui entraremos com o formulário definitivo de confirmação de presença\.'\);return false;"/i,
+      /href="#"\s+onclick="alert\([^\"]*confirmação de presença[^\"]*\);return false;"/i,
       'href="/confirmacao.html"'
     );
 
+    // Proteção extra: mesmo que o HTML antigo mude um pouco, o botão é corrigido no cliente.
     const patch=`<script>(function(){function fixRSVP(){var links=[].slice.call(document.querySelectorAll('a.action'));var a=links.find(function(el){return (el.textContent||'').toLowerCase().indexOf('confirmar presença')>=0});if(a){a.setAttribute('href','/confirmacao.html');a.removeAttribute('onclick');a.onclick=null}}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',fixRSVP)}else{fixRSVP()}})();<\/script>`;
     html=html.replace('</body>',patch+'</body>');
 
