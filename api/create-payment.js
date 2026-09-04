@@ -20,7 +20,6 @@ module.exports = async function handler(req, res) {
   const publicKey = process.env.PAGOPAR_PUBLIC_KEY;
   const privateKey = process.env.PAGOPAR_PRIVATE_KEY;
 
-  // Safe browser health check. Never returns either key.
   if (req.method === "GET") {
     return res.status(publicKey && privateKey ? 200 : 503).json({
       service: "alice-lucas-pagopar",
@@ -50,9 +49,9 @@ module.exports = async function handler(req, res) {
       return res.status(400).json({ error: "Nome, e-mail e documento são obrigatórios." });
     }
 
-    // Os meios de pagamento usados pela página são:
-    // 9 = cartão de crédito/débito; 11 = transferência bancária.
-    const method = [9, 11].includes(Number(paymentMethod)) ? Number(paymentMethod) : 9;
+    // Pagopar: 24 = Pago QR; 9 = cartões; 11 = transferência.
+    // A transferência direta do site não chama esta rota, mas 11 permanece aceito por segurança.
+    const method = [24, 9, 11].includes(Number(paymentMethod)) ? Number(paymentMethod) : 24;
     const orderId = `AL${Date.now()}${crypto.randomBytes(3).toString("hex")}`.replace(/[^a-zA-Z0-9]/g, "");
     const token = sha1(privateKey + orderId + String(total));
 
@@ -130,7 +129,6 @@ module.exports = async function handler(req, res) {
     const hash = result.resultado[0].data;
     const checkoutUrl = `https://www.pagopar.com/pagos/${encodeURIComponent(hash)}?forma_pago=${method}`;
 
-    // O hash deve ser persistido se você quiser controlar "pago/pendente" no seu próprio banco.
     return res.status(200).json({ checkoutUrl, hash, orderId });
   } catch (err) {
     console.error("create-payment exception:", err);
