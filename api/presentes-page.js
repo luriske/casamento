@@ -3,10 +3,10 @@ export default async function handler(req,res){
     const r=await fetch(`https://raw.githubusercontent.com/luriske/casamento/main/presentes.html?v=${Date.now()}`,{cache:'no-store'});
     let html=await r.text();
 
-    const coffee='https://images.unsplash.com/photo-1772442363880-17ad476bdfee?auto=format&fit=crop&fm=jpg&q=82&w=1400';
-    const robot='https://images.unsplash.com/photo-1762500825301-569628303acb?auto=format&fit=crop&fm=jpg&q=82&w=1400';
+    // Imagens locais do próprio projeto: sem hotlink, sem dependência de CDN externa.
+    const coffee='/assets/presentes/cafeteira.webp';
+    const robot='/assets/presentes/robo-aspirador.webp';
 
-    // Corrige qualquer versão anterior dessas duas imagens.
     html=html
       .replace(/https:\/\/images\.studiokreatura\.pl\/2024\/10\/dc2fac1d-46b5-4678-be1d-d718bc5fa719\.webp/g,coffee)
       .replace(/https:\/\/us\.narwal\.com\/cdn\/shop\/articles\/best-robot-vacuum-for-a-large-house-in-2024-508122\.jpg\?v=1725989345&width=1100/g,robot)
@@ -15,13 +15,7 @@ export default async function handler(req,res){
       .replace(/\/api\/gift-image\?id=coffee/g,coffee)
       .replace(/\/api\/gift-image\?id=robot/g,robot);
 
-    // Se uma imagem externa falhar, não deixa o cartão quebrado visualmente.
-    html=html.replace(
-      '<img class="photo" src="${safe(g.img)}" alt="${safe(g.name)}" loading="lazy" referrerpolicy="no-referrer">',
-      '<img class="photo" src="${safe(g.img)}" alt="${safe(g.name)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src=\'https://images.unsplash.com/photo-1517705008128-361805f42e86?auto=format&fit=crop&q=75&w=1200\'">'
-    );
-
-    // QR vira o meio padrão e o cartão fica como alternativa separada.
+    // QR é o meio padrão; cartão e transferência ficam separados.
     html=html.replace('let selectedGift=null,paymentMethod=9;','let selectedGift=null,paymentMethod=24;');
     html=html.replace('.methods{display:grid;grid-template-columns:1fr 1fr;','.methods{display:grid;grid-template-columns:repeat(3,1fr);');
     html=html.replace(
