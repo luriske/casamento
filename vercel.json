@@ -1,7 +1,7 @@
 {
   "rewrites": [
-    { "source": "/", "destination": "/api/home" },
-    { "source": "/index.html", "destination": "/api/home" },
+    { "source": "/", "destination": "/home.html" },
+    { "source": "/index.html", "destination": "/home.html" },
     { "source": "/presentes.html", "destination": "/api/presentes-page" }
   ]
 }
