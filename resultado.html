@@ -9,15 +9,11 @@ h1{font-weight:500;font-size:38px;margin:5px 0 10px}.heart{font-size:30px;color:
 <div class="card"><div class="heart">♡</div><h1>Obrigado!</h1><p class="status" id="msg">Estamos confirmando o pagamento do seu presente.</p><a class="btn" href="/">Voltar à lista</a></div>
 <script>
 const q=new URLSearchParams(location.search);
-const hash=q.get("hash")||q.get("hash_pedido")||q.get("pedido");
+const bruto=q.get("hash")||q.get("hash_pedido")||q.get("pedido")||"";
+// o Pagopar pode devolver o valor com parenteses, conforme o formato ($hash) do painel
+const hash=bruto.trim().replace(/^[\s(]+|[\s)]+$/g,"");
 if(hash){
  fetch("/api/payment-status?hash="+encodeURIComponent(hash))
  .then(r=>r.json()).then(d=>{
    const x=d?.resultado?.[0];
-   if(x?.pagado===true) msg.textContent="Pagamento confirmado. Muito obrigado pelo carinho!";
-   else if(x) msg.textContent="O pagamento ainda aparece como pendente. Você pode fechar esta página com tranquilidade.";
- }).catch(()=>{});
-}else{
- msg.textContent="Obrigado pelo carinho! A confirmação do pagamento é processada pelo gateway.";
-}
-</script></body></html>
+   if(x?.pagado===true)
