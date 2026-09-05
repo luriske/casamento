@@ -43,6 +43,6 @@ module.exports=function(req,res){
   const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 3" preserveAspectRatio="xMidYMid slice"><image href="${dataUri}" width="4" height="3" preserveAspectRatio="xMidYMid slice"/></svg>`;
 
   res.setHeader('Content-Type','image/svg+xml; charset=utf-8');
-  res.setHeader('Cache-Control','public, max-age=31536000, immutable');
+  res.setHeader('Cache-Control','public, max-age=300');
   return res.status(200).send(svg);
 };
