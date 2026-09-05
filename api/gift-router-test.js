@@ -1,0 +1,3 @@
+const routes={
+'1':'/api/gifts-01?id=1','2':'/api/gifts-01?id=2','3':'/api/coffee-local','4':'/api/robot-local','5':'/api/gifts-03?id=5','6':'/api/gifts-03?id=6','7':'/api/gifts-04?id=7','8':'/api/gifts-04?id=8','9':'/api/gifts-05?id=9','10':'/api/gifts-05?id=10','11':'/api/gifts-06?id=11','12':'/api/gifts-06?id=12','13':'/api/gifts-07?id=13','14':'/api/gifts-07?id=14','15':'/api/gifts-08?id=15','16':'/api/gifts-08?id=16','17':'/api/gift-17','18':'/api/gift-18','19':'/api/gift-19','20':'/api/gift-20'};
+module.exports=function(req,res){const id=String(req.query.id||'');const target=routes[id];if(!target)return res.status(404).end();res.setHeader('Cache-Control','no-store');res.setHeader('Location',target);return res.status(302).end();};
